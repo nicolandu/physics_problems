@@ -1,0 +1,329 @@
+\documentclass[letterpaper]{article}
+
+\usepackage{lmodern}% use Latin Modern font, which is vector
+\usepackage[french]{babel} % guillemets
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{newfloat}
+\usepackage{tocloft}
+
+\newcommand{\listofdiagramsname}{List of Diagrams}
+\DeclareFloatingEnvironment[fileext=loq,
+    placement={!htbp},
+    name=Diagrams,
+    listname=\listofdiagramsname,
+]{diagram}
+
+\addto\captionsfrench{\renewcommand{\diagramname}{\textsc{Diagramme}}}
+\addto\captionsfrench{\renewcommand{\listofdiagramsname}{Liste des diagrammes}}
+
+\usepackage{svg}
+\graphicspath{{figures/}}
+
+\usepackage{tikz}
+\usetikzlibrary{babel}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations}
+\usetikzlibrary{calligraphy}%Braces
+\usetikzlibrary{angles}
+\usetikzlibrary{quotes}
+
+\usepackage{tkz-euclide}
+
+\usepackage{siunitx}
+\sisetup{%
+     output-decimal-marker = {,},
+     inter-unit-product = \ensuremath{{}\cdot{}},
+     per-mode = fraction,
+}
+\DeclareSIUnit\knot{\text{n\oe uds}}
+
+\usepackage{enumerate}
+
+\usepackage[french]{datetime2}
+\DTMnewdatestyle{qcdate}{%
+    \renewcommand{\DTMdisplaydate}[4]{\number##3{} \DTMenglishmonthname{##2} \number##1}%
+  \renewcommand{\DTMDisplaydate}{\DTMdisplaydate}%
+}
+\DTMsetdatestyle{qcdate}
+
+\usepackage[skip=\medskipamount]{parskip}
+
+\usepackage{titlesec}
+\titlelabel{\thetitle.\quad}
+
+\newcommand{\qed}{\rlap{$\qquad \blacksquare$}}
+
+\sloppy
+
+\title{Exercices---Plan inclin\'e, forces et \'energie}
+\date{\today}
+\author{Nicolas Landucci}
+
+\begin{document}
+\maketitle
+
+\section{D\'ecollage}
+    Un avion d'une masse de \qty{7.50e4}{\kilogram} s'\'elance sur une piste de \qty{2.00}{\kilo\metre} de longueur pour d\'ecoller. Ses moteurs fournissent une pouss\'ee de \qty{2.42e5}{\newton}; le coefficient de frottement cin\'etique entre les pneus de l'appareil et la piste est de \num{0.03} (r\'esistance de roulement).
+
+    \begin{figure}[H]
+        \centering
+        \resizebox{\linewidth}{!}{
+            \begin{tikzpicture}
+                \node[inner sep=0pt, above right] at (0,0)
+                    {\includesvg[width=.125\textwidth]{a320.svg}};
+                \draw (0,0) -- (8,0);
+            \end{tikzpicture}
+        }
+        
+        \caption{Un avion sur une piste de d\'ecollage.}
+    \end{figure}
+
+    \begin{enumerate}[a)]
+    \item
+        Quelle sera l'acc\'el\'eration de l'avion?
+    \item
+        S'il quitte le sol lorsqu'il atteint la vitesse de \qty{155}{\knot} (\qty{79.7}{\metre\per\second}), sur quelle distance l'avion roulera-t-il sur la piste?
+        
+    \begin{figure}[H]
+        \centering
+        \resizebox{\linewidth}{!}{
+            \begin{tikzpicture}
+                \node[inner sep=0pt, above right, rotate=10] at (2,0.2)
+                    {\includesvg[width=.125\textwidth]{a320.svg}};
+                \draw (0,0) -- (8,0);
+            \end{tikzpicture}
+        }
+        
+        \caption{Le m\^eme avion, apr\`es d\'ecollage.}
+    \end{figure}
+    \item
+        Une fois que l'avion d\'ecolle, il monte en conservant la m\^eme vitesse (\qty{155}{\knot}, \qty{79.7}{\metre\per\second}) et la m\^eme pouss\'ee. Si la r\'esistance de l'air est n\'egligeable, quel est l'angle de l'avion?
+    \item
+        Lorsqu'il sera rendu \`a l'extr\'emit\'e de la piste, quelle sera la hauteur de l'avion?
+    \end{enumerate}
+
+    \clearpage
+    \subsection*{Solution}
+
+    
+    \begin{enumerate}[a)]
+            
+    
+    \item
+        Quelle sera l'acc\'el\'eration de l'avion?
+        \subsubsection*{Diagramme de corps libre}
+        \begin{diagram}[H]
+            \centering
+            \resizebox{\linewidth}{!}{
+                \begin{tikzpicture}
+                    \node[inner sep=0pt, above right, opacity=0.25] (plane) at (1,0) 
+                        {\includesvg[width=6cm]{a320.svg}};
+                    \coordinate (comtop) at ($(plane.center)!0.25!(plane.east)$);
+                    \coordinate (combot) at ($(plane.south)!0.25!(plane.south east)$);
+                    \coordinate (com) at ($(comtop)!0.5!(combot)$);
+                    \draw[draw opacity=0.25] (0,0) -- (8,0);
+                    \draw[-latex, color=blue] (com) -- ++(0,1) node[near end,right] {$F_N$};
+                    \draw[-latex, color=blue] (com) -- ++(0,-1) node[near end,right] {$F_g$};
+                    \draw[-latex, color=red] (com) -- ++(1,0) node[near end,above] {$F$};
+                    \draw[-latex, color=red] (com) -- ++(-0.5,0) node[near end,above] {$F_{F_c}$};
+                    \filldraw[black] (com) circle (1.5pt);
+                \end{tikzpicture}
+            }
+            
+            \caption{Un avion sur une piste de d\'ecollage.}
+        \end{diagram}
+        \begin{align*}
+            m &= \qty{7.50e4}{\kilogram} \\
+            g &= \qty{9.8}{\metre\per\second\squared} \\
+            F &= \qty{2.42e5}{\newton} \\
+            \mu_c &= \num{0.03}
+        \end{align*}
+        
+        \paragraph*{Calculer $F_N$}
+        \begin{align*}
+            \sum F_y &= 0 \\
+            F_N - F_g &= 0 \\
+            F_N &= F_g \\
+            F_N &= mg \\
+            F_N &= \left(\qty{7.50e4}{\kilogram}\right) \left(\qty{9.8}{\metre\per\second\squared}\right) \\
+            F_N &= \qty{7.35e5}{\newton} \end{align*}
+            
+        \paragraph*{Calculer $a$}
+        \begin{align*}
+            \sum F_x &= ma \\
+            F - F_{F_c} &= ma \\
+            F - \mu_cF_N &= ma \\
+            \qty{2.42e5}{\newton} - \num{0.03}\left(\qty{7.35e5}{\newton}\right) &= \left(\qty{7.50e4}{\kilogram}\right)a \\
+            \frac{\qty{2.42e5}{\newton} - \num{0.03}\left(\qty{7.35e5}{\newton}\right)}{\qty{7.50e4}{\kilogram}} &= a \\
+            \qty{2.93}{\metre\per\second\squared} &= a \qed
+        \end{align*}
+        
+    \filbreak
+    \item
+        S'il quitte le sol lorsqu'il atteint la vitesse de \qty{155}{\knot} (\qty{79.7}{\metre\per\second}), sur quelle distance l'avion roulera-t-il sur la piste?
+        \begin{align*}
+            v_i &= \qty{0}{\metre\per\second} \\
+            v_f &= \qty{79.7}{\metre\per\second} \\
+            a &= \qty{2.93}{\metre\per\second\squared}
+        \end{align*}
+
+        \paragraph*{Calculer $\Delta x$}
+        \begin{align*}
+            v_f^2 &= v_i^2 + 2a\Delta x \\
+            v_f^2 - v_i^2 &= 2a\Delta x \\
+            \left(\qty{79.7}{\metre\per\second}\right)^2 - \left(\qty{0}{\metre\per\second}\right)^2 &= 2\left(\qty{2.93}{\metre\per\second\squared}\right)\Delta x \\
+            \frac{\left(\qty{79.7}{\metre\per\second}\right)^2 - \left(\qty{0}{\metre\per\second}\right)^2}{2\left(\qty{2.93}{\metre\per\second\squared}\right)} &= \Delta x \\
+            \qty{1.084e3}{\metre} &= \Delta x \tag{Plus de pr\'ecision pour les calculs suivants} \\
+            \qty{1.08e3}{\metre} &= \Delta x \qed \tag{3 C.\,S. pour la r\'eponse}\\
+        \end{align*}
+        
+    \filbreak
+    
+    \item
+        Une fois que l'avion d\'ecolle, il monte en conservant la m\^eme vitesse (\qty{155}{\knot}, \qty{79.7}{\metre\per\second}) et la m\^eme pouss\'ee. Si la r\'esistance de l'air est n\'egligeable, quel est l'angle de l'avion?
+        \subsubsection*{Diagramme de corps libre}
+        \begin{diagram}[H]
+            \centering
+            \resizebox{\linewidth}{!}{
+                \begin{tikzpicture}
+                    \node[inner sep=0pt, above right, opacity=0.25, rotate=20] (plane) at (1,0.5) 
+                        {\includesvg[width=6cm]{a320.svg}};
+                    \coordinate (comtop) at ($(plane.center)!0.25!(plane.east)$);
+                    \coordinate (combot) at ($(plane.south)!0.25!(plane.south east)$);
+                    \coordinate (com) at ($(comtop)!0.5!(combot)$);
+                    \draw[draw opacity=0.25] (0,0) -- (8,0);
+                    \begin{scope}[rotate=20]
+                        \draw[-latex, color=blue] (com) -- ++(0,{1.5*cos(20)}) node[near end,right] {$F_N$};
+                        \draw[-latex, color=blue] (com) -- ++(0,{-1.5*cos(20)}) node[near end,right] {$F_{g_y}$};
+                        \draw[-latex, color=red] (com) -- ++({1.5*sin(20)},0) node[near end,above] {$F$};
+                        \draw[-latex, color=red] (com) -- ++({-1.5*sin(20)},0) node[near end,left] {$F_{g_x}$};
+                        \draw[-latex] ($(com) + (1,0.75)$) -- ++(1,0) node[midway,above left] {$\vec{v}$};
+                        \filldraw[black] (com) circle (1.5pt);
+                    \end{scope}
+                \end{tikzpicture}
+            }
+            
+            \caption{Le m\^eme avion, apr\`es d\'ecollage.}
+        \end{diagram}
+    
+        \begin{align*}
+            m &= \qty{7.50e4}{\kilogram} \\
+            g &= \qty{9.8}{\metre\per\second\squared} \\
+            F &= \qty{2.42e5}{\newton} \\
+            a &= \qty{0}{\metre\per\second\squared} \tag{Vitesse constante}
+        \end{align*}
+        
+        \paragraph*{Calculer $\theta$}
+        \begin{align*}
+            \sum F_x &= ma \\
+            F - F_{g_x} &= m\left(\qty{0}{\metre\per\second\squared}\right) \\
+            F - F_{g_x} &= 0 \\
+            F &= F_{g_x} \\
+            F &= mg\sin \theta \\
+            \qty{2.42e5}{\newton} &= \left(\qty{7.50e4}{\kilogram}\right) \left(\qty{9.8}{\metre\per\second\squared}\right) \sin \theta \\
+            \frac{\qty{2.42e5}{\newton}}{\left(\qty{7.50e4}{\kilogram}\right) \left(\qty{9.8}{\metre\per\second\squared}\right)} &= \sin \theta \\
+            \sin^{-1} \left(\frac{\qty{2.42e5}{\newton}}{\left(\qty{7.50e4}{\kilogram}\right) \left(\qty{9.8}{\metre\per\second\squared}\right)}\right) &= \theta \\
+            \qty{19.2}{\degree} &= \theta \qed
+        \end{align*}
+    
+    \filbreak
+    \item
+        Lorsqu'il sera rendu \`a l'extr\'emit\'e de la piste, \`a quelle hauteur sera l'avion?
+        
+        \begin{diagram}[H]
+            \centering
+            \resizebox{\linewidth}{!}{
+                \begin{tikzpicture}[scale=1.25]
+                    \draw[dashed] (0,0) -- ({1084/2000*10},0) node[midway, above] {\qty{1084}{\metre}} coordinate (o);
+                    \draw[decorate, decoration={calligraphic brace,mirror}] (0,-0.1) -- ++(10, 0) node[midway, below=1pt] {\qty{2000}{\metre}};
+                    \draw (o) -- (10,0) node[pos=0.95, above left] {$\left(2000-1084\right)\unit{\metre}$} coordinate (a) -- (10,1.6) node[midway, right] {$h$} coordinate (b) -- cycle;
+                    \tkzMarkAngle[size=1](a,o,b)
+                    \tkzLabelAngle[pos=1.2](a,o,b){$\theta$}
+                \end{tikzpicture}
+            }
+            \caption{Hauteur \`a la fin de la piste et distance restante.}
+        \end{diagram}
+
+        \begin{align*}
+            \theta &= \qty{19.2}{\degree}
+        \end{align*}
+        
+        \paragraph*{Calculer $h$}
+        \begin{align*}
+            \tan \theta &= \frac{h}{\left(2000-1084\right)\unit{\metre}} \\
+            \tan \qty{19.2}{\degree} &= \frac{h}{\qty{916}{\metre}} \\
+            \left(\tan \qty{19.2}{\degree}\right) \left(\qty{916}{\metre}\right) &= h \\
+            \qty{319}{\metre} &= h \qed
+        \end{align*}
+        
+    \end{enumerate}
+
+    \clearpage
+    \section{Freinage d'urgence}
+        En freinant au seuil (freinage maximal sans que les pneus d\'erapent), quelle distance une voiture prend-elle pour passer de \qty{100}{\kilo\metre\per\hour} \`a l'arr\^et sur une route plate? Les coefficients de friction statique et cin\'etique entre le caoutchouc et l'asphalte sont respectivement de \num{0.7} et de \num{0.5}.
+
+    \clearpage
+    \subsection*{Solution}
+
+    \'Etant donn\'e que les pneus ne d\'erapent pas, le coefficient de friction entre les roues et le sol est de \num{0.7} $\left(\mu_s\right)$.
+    
+    \subsubsection*{Diagramme de corps libre}
+    \begin{diagram}[H]
+        \centering
+        \resizebox{0.5\linewidth}{!}{
+            \begin{tikzpicture}
+                \draw (0,0) -- (4,0);
+                \draw (1.5,0) rectangle (2.5,1);
+                \coordinate (com) at (2,0.5);
+                \draw[-latex, color=blue] (com) -- ++(0,1) node[near end,right] {$F_N$};
+                \draw[-latex, color=blue] (com) -- ++(0,-1) node[near end,right] {$F_g$};
+                \draw[-latex, color=red] (com) -- ++(-0.7,0) node[near end,left] {$F_{F_s}$};
+                \draw[-latex] ($(com) + (0.8,0)$) -- ++(0.7,0) node[midway,above] {$\vec{v}$};
+                \filldraw[black] (com) circle (1.5pt);
+            \end{tikzpicture}
+        }
+        \caption{Une voiture en freinage.}
+    \end{diagram}
+        
+        
+        \begin{align*}
+            g &= \qty{9.8}{\metre\per\second\squared} \\
+            \mu_s &= \num{0.7} \\
+            v_i &= \qty{100}{\kilo\metre\per\hour} \\
+            v_i &= \qty{100}{\kilo\metre\per\hour} \cdot \frac{\qty{1}{\metre\per\second}}{\qty{3.6}{\kilo\metre\per\hour}} = \qty{27.78}{\metre\per\second} \\
+            v_f &= \qty{0}{\metre\per\second}
+        \end{align*}
+        
+        \paragraph*{Calculer $F_N$}
+        \begin{align*}
+            \sum F_y &= 0 \\
+            F_N - F_g &= 0 \\
+            F_N &= F_g \\
+            F_N &= mg \\
+            F_N &= m \left(\qty{9.8}{\metre\per\second\squared}\right)
+        \end{align*}
+        
+        \paragraph*{Calculer $a$}
+        \begin{align*}
+            \sum F_x &= ma \\
+            - F_{F_s} &= ma \\
+            - \mu_sF_N &= ma \\
+            - \num{0.7} \cdot m \left(\qty{9.8}{\metre\per\second\squared}\right) &= ma \\
+            - \num{0.7} \left(\qty{9.8}{\metre\per\second\squared}\right) &= a \tag{Simplification de $m$ des deux c\^ot\'es} \\
+            \qty{-6.86}{\metre\per\second\squared} &= a
+        \end{align*}
+        
+        \paragraph*{Calculer $\Delta x$}
+        \begin{align*}
+            v_f^2 &= v_i^2 + 2a\Delta x \\
+            v_f^2 - v_i^2 &= 2a\Delta x \\
+            \left(\qty{0}{\metre\per\second}\right)^2 - \left(\qty{27.78}{\metre\per\second}\right)^2 &= 2\left(\qty{-6.86}{\metre\per\second\squared}\right)\Delta x \\
+            \frac{\left(\qty{0}{\metre\per\second}\right)^2 - \left(\qty{27.78}{\metre\per\second}\right)^2}{2\left(\qty{-6.86}{\metre\per\second\squared}\right)} &= \Delta x \\
+            \qty{56.2}{\metre} &= \Delta x \qed \tag{3 C.\,S.}\\
+        \end{align*}
+
+\end{document}
