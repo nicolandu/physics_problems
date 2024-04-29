@@ -240,9 +240,10 @@
                 \begin{tikzpicture}[scale=1.25]
                     \draw[dashed] (0,0) -- ({1084/2000*10},0) node[midway, above] {\qty{1084}{\metre}} coordinate (o);
                     \draw[decorate, decoration={calligraphic brace,mirror}] (0,-0.1) -- ++(10, 0) node[midway, below=1pt] {\qty{2000}{\metre}};
-                    \draw (o) -- (10,0) node[pos=0.95, above left] {$\left(2000-1084\right)\unit{\metre}$} coordinate (a) -- (10,1.6) node[midway, right] {$h$} coordinate (b) -- cycle;
+                    \draw (o) -- (10,0) node[pos=0.85, above left] {$\left(2000-1084\right)\unit{\metre}$} coordinate (a) -- (10,1.6) node[midway, right] {$h$} coordinate (b) -- cycle;
                     \tkzMarkAngle[size=1](a,o,b)
                     \tkzLabelAngle[pos=1.2](a,o,b){$\theta$}
+                    \tkzMarkRightAngle[size=0.3](o,a,b)
                 \end{tikzpicture}
             }
             \caption{Hauteur \`a la fin de la piste et distance restante.}
